@@ -1,0 +1,12 @@
+# Each share needs a unique token (there's a unique index on token).
+# has_secure_token generates tokens at runtime, but fixtures need explicit values.
+
+one:
+  token: <%= SecureRandom.hex(24) %>
+  document: one
+  user: one
+
+two:
+  token: <%= SecureRandom.hex(24) %>
+  document: two
+  user: two

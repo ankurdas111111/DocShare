@@ -4,6 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  # Order matters: shares must be destroyed before documents
+  has_many :shares, dependent: :destroy
   has_many :documents, dependent: :destroy
 
   validates :name, presence: true

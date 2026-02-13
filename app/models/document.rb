@@ -1,6 +1,7 @@
 class Document < ApplicationRecord
   belongs_to :user
 
+  has_one :share, dependent: :destroy
   has_one_attached :file
 
   scope :search_by_title, ->(query) {
@@ -12,7 +13,7 @@ class Document < ApplicationRecord
   validate :file_must_be_pdf
   validate :file_must_be_under_size_limit
 
-  MAX_FILE_SIZE = 10 #in_mb
+  MAX_FILE_SIZE = 10 # in megabytes
 
   private
 
