@@ -20,14 +20,19 @@ export default class extends Controller {
     try {
       const pdf = await pdfjsLib.getDocument(this.urlValue).promise
       this.totalPages = pdf.numPages
-      this.updatePageInfo()
+      this.containerTarget.innerHTML = ""
 
       // Render all pages sequentially
       for (let i = 1; i <= pdf.numPages; i++) {
         await this.renderPage(pdf, i)
       }
 
-      // Observe which page is visible
+      // Set page 1 immediately after rendering completes
+      this.currentPage = 1
+      this.updatePageInfo()
+      this.updatePageNumberInput()
+
+      // Observing which page is visible on scroll
       this.setupPageObserver()
     } catch (error) {
       this.containerTarget.innerHTML = "<p style='color: red;'>Failed to load PDF. Please try again.</p>"
@@ -100,8 +105,13 @@ export default class extends Controller {
   }
 
   updatePageNumberInput() {
-    if (this.hasPageNumberInputTarget) {
-      this.pageNumberInputTarget.value = this.currentPage
+    //Stimulus target first then fall back to DOM query
+    const input = this.hasPageNumberInputTarget
+      ? this.pageNumberInputTarget
+      : this.element.querySelector("[data-pdf-viewer-target='pageNumberInput']")
+
+    if (input) {
+      input.value = this.currentPage
     }
   }
 }
