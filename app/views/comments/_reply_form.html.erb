@@ -1,0 +1,17 @@
+<%= form_with(model: [document, Comment.new], local: true) do |f| %>
+  <%= f.hidden_field :parent_id, value: parent.id %>
+
+  <div class="field">
+    <%= f.text_area :body, rows: 2, placeholder: "Write a reply...", style: "width: 100%; font-size: 13px;" %>
+  </div>
+
+  <% unless defined?(current_user) && current_user %>
+    <div class="field">
+      <%= f.text_field :guest_name, placeholder: "Your name", style: "font-size: 13px; margin-top: 4px;" %>
+    </div>
+  <% end %>
+
+  <div class="actions" style="margin-top: 4px;">
+    <%= f.submit "Reply", style: "font-size: 12px;" %>
+  </div>
+<% end %>

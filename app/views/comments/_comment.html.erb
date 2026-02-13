@@ -1,10 +1,113 @@
-<div class="comment" style="border-bottom: 1px solid #eee; padding: 8px 0;">
-  <strong><%= comment.author_name %></strong>
-  <% if comment.page_number.present? %>
-    <span style="color: #666;">(Page <%= comment.page_number %>)</span>
-  <% end %>
-  <br>
-  <span><%= comment.body %></span>
-  <br>
-  <small style="color: #999;"><%= time_ago_in_words(comment.created_at) %> ago</small>
-</div>
+<% document = comment.document %>
+<% is_owner = defined?(current_user) && current_user == document.user %>
+<% is_author = defined?(current_user) && comment.editable_by?(current_user) %>
+
+<% if comment.resolved? %>
+  <%# Resolved comments collapse into a dropdown %>
+  <details style="border-bottom: 1px solid #eee; padding: 8px 0; opacity: 0.6;">
+    <summary style="cursor: pointer; color: #666;">
+      <strong><%= comment.author_name %></strong>
+      <% if comment.page_number.present? %>
+        <span>(Page <%= comment.page_number %>)</span>
+      <% end %>
+      — <em>Resolved</em>
+      <small>· <%= time_ago_in_words(comment.updated_at) %> ago</small>
+    </summary>
+    <div style="padding: 8px 0 0 16px;">
+      <span><%= comment.body %></span>
+      <br>
+      <small style="color: #999;">Posted <%= time_ago_in_words(comment.created_at) %> ago</small>
+
+      <%# Show replies even when resolved %>
+      <% if comment.replies.any? %>
+        <div style="margin-top: 8px; padding-left: 12px; border-left: 2px solid #ddd;">
+          <% comment.replies.order(created_at: :asc).each do |reply| %>
+            <div style="padding: 4px 0;">
+              <strong style="font-size: 13px;"><%= reply.author_name %></strong>
+              <small style="color: #999;">· <%= time_ago_in_words(reply.created_at) %> ago</small>
+              <br>
+              <span style="font-size: 13px;"><%= reply.body %></span>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if is_owner %>
+        <br>
+        <%= button_to "Unresolve",
+              toggle_resolved_document_comment_path(document, comment),
+              method: :patch,
+              style: "font-size: 12px; margin-top: 4px;" %>
+      <% end %>
+    </div>
+  </details>
+
+<% else %>
+  <%# Active comments shown normally %>
+  <div class="comment" style="border-bottom: 1px solid #eee; padding: 8px 0;">
+    <strong><%= comment.author_name %></strong>
+    <% if comment.page_number.present? %>
+      <span style="color: #666;">(Page <%= comment.page_number %>)</span>
+    <% end %>
+    <br>
+    <span><%= comment.body %></span>
+    <br>
+    <small style="color: #999;"><%= time_ago_in_words(comment.created_at) %> ago</small>
+
+    <%# Actions %>
+    <div style="margin-top: 4px;">
+      <% if is_author %>
+        <%= link_to "Edit",
+              edit_document_comment_path(document, comment),
+              style: "font-size: 12px; margin-right: 8px;" %>
+        <%= button_to "Delete",
+              document_comment_path(document, comment),
+              method: :delete,
+              style: "font-size: 12px; margin-right: 8px;",
+              data: { turbo_confirm: "Delete this comment?" } %>
+      <% end %>
+
+      <% if is_owner %>
+        <%= button_to "Resolve",
+              toggle_resolved_document_comment_path(document, comment),
+              method: :patch,
+              style: "font-size: 12px;" %>
+      <% end %>
+    </div>
+
+    <%# Replies %>
+    <% if comment.replies.any? %>
+      <div style="margin-top: 8px; padding-left: 12px; border-left: 2px solid #ddd;">
+        <% comment.replies.order(created_at: :asc).each do |reply| %>
+          <div style="padding: 4px 0;">
+            <strong style="font-size: 13px;"><%= reply.author_name %></strong>
+            <small style="color: #999;">· <%= time_ago_in_words(reply.created_at) %> ago</small>
+            <br>
+            <span style="font-size: 13px;"><%= reply.body %></span>
+            <% if defined?(current_user) && reply.editable_by?(current_user) %>
+              <br>
+              <%= link_to "Edit",
+                    edit_document_comment_path(document, reply),
+                    style: "font-size: 11px; margin-right: 6px;" %>
+              <%= button_to "Delete",
+                    document_comment_path(document, reply),
+                    method: :delete,
+                    style: "font-size: 11px;",
+                    data: { turbo_confirm: "Delete this reply?" } %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%# Reply toggle — only for authenticated users on the owner view %>
+    <% if defined?(current_user) && current_user %>
+      <details style="margin-top: 6px;">
+        <summary style="cursor: pointer; font-size: 12px; color: #555;">Reply</summary>
+        <div style="padding: 6px 0 0 12px;">
+          <%= render partial: "comments/reply_form", locals: { document: document, parent: comment } %>
+        </div>
+      </details>
+    <% end %>
+  </div>
+<% end %>

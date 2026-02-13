@@ -1,0 +1,18 @@
+<h2>Edit Comment</h2>
+
+<%= form_with(model: [@document, @comment], local: true) do |f| %>
+  <div class="field">
+    <p><%= f.label :page_number, "Page #" %></p>
+    <p><%= f.number_field :page_number, min: 1 %></p>
+  </div>
+
+  <div class="field">
+    <p><%= f.label :body, "Comment" %></p>
+    <p><%= f.text_area :body, rows: 3 %></p>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Update Comment" %>
+    <%= link_to "Cancel", document_path(@document) %>
+  </div>
+<% end %>

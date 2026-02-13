@@ -25,6 +25,6 @@ class SharedDocumentsController < ApplicationController
   end
 
   def comment_params
-    params.require(:comment).permit(:body, :page_number, :guest_name)
+    params.require(:comment).permit(:body, :page_number, :guest_name, :parent_id)
   end
 end

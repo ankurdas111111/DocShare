@@ -3,7 +3,9 @@ Rails.application.routes.draw do
 
   resources :documents, only: [ :new, :create, :show ] do
     resource :share, only: [ :create ]
-    resources :comments, only: [ :create ]
+    resources :comments, only: [ :create, :edit, :update, :destroy ] do
+      patch :toggle_resolved, on: :member
+    end
   end
 
   # Public access to shared documents (anonymous users)

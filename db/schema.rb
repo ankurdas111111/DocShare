@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_13_125035) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_13_132817) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -48,9 +48,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_13_125035) do
     t.bigint "document_id", null: false
     t.string "guest_name"
     t.integer "page_number"
+    t.bigint "parent_id"
+    t.boolean "resolved", default: false, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["document_id"], name: "index_comments_on_document_id"
+    t.index ["parent_id"], name: "index_comments_on_parent_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
@@ -88,6 +91,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_13_125035) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "comments", "comments", column: "parent_id"
   add_foreign_key "comments", "documents"
   add_foreign_key "comments", "users"
   add_foreign_key "documents", "users"
