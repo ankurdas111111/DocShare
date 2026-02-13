@@ -1,7 +1,7 @@
 <%= form_with(model: [document, Comment.new], local: true) do |f| %>
   <div class="field">
     <p><%= f.label :page_number, "Page #" %></p>
-    <p><%= f.number_field :page_number, min: 1, placeholder: "Optional" %></p>
+    <p><%= f.number_field :page_number, min: 1, placeholder: "Auto-detected", data: { pdf_viewer_target: "pageNumberInput" } %></p>
   </div>
 
   <div class="field">
