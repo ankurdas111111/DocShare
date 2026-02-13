@@ -1,0 +1,16 @@
+<h1><%= @document.title %></h1>
+
+<p>
+  Shared by <%= @document.user.name %>
+</p>
+
+<hr>
+
+<% if @document.file.attached? %>
+  <iframe
+    src="<%= rails_blob_path(@document.file, disposition: "inline") %>"
+    width="100%"
+    height="800px"
+    style="border: 1px solid #ccc;">
+  </iframe>
+<% end %>
