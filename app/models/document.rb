@@ -3,6 +3,10 @@ class Document < ApplicationRecord
 
   has_one_attached :file
 
+  scope :search_by_title, ->(query) {
+    where("title ILIKE ?", "%#{sanitize_sql_like(query)}%") if query.present?
+  }
+
   validates :title, presence: true
   validates :file, presence: true
   validate :file_must_be_pdf

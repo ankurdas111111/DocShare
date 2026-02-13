@@ -7,12 +7,24 @@
 
 <h2>Your Documents</h2>
 
-<% if current_user.documents.any? %>
+<%= form_with url: root_path, method: :get, local: true do |f| %>
+  <%= f.text_field :query, value: params[:query], placeholder: "Search by filename..." %>
+  <%= f.submit "Search" %>
+  <% if params[:query].present? %>
+    <%= link_to "Clear", root_path %>
+  <% end %>
+<% end %>
+
+<% if @documents.any? %>
   <ul>
-    <% current_user.documents.order(created_at: :desc).each do |doc| %>
+    <% @documents.each do |doc| %>
       <li><%= doc.title %> — uploaded <%= time_ago_in_words(doc.created_at) %> ago</li>
     <% end %>
   </ul>
 <% else %>
-  <p>No PDFs uploaded yet. <%= link_to "Upload your first PDF", new_document_path %>.</p>
+  <% if params[:query].present? %>
+    <p>No documents matching "<%= params[:query] %>".</p>
+  <% else %>
+    <p>No PDFs uploaded yet. <%= link_to "Upload your first PDF", new_document_path %>.</p>
+  <% end %>
 <% end %>
