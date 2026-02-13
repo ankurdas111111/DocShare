@@ -1,0 +1,24 @@
+<%= form_with(model: [document, Comment.new], local: true) do |f| %>
+  <div class="field">
+    <p><%= f.label :page_number, "Page #" %></p>
+    <p><%= f.number_field :page_number, min: 1, placeholder: "Optional" %></p>
+  </div>
+
+  <div class="field">
+    <p><%= f.label :body, "Comment" %></p>
+    <p><%= f.text_area :body, rows: 3, placeholder: "Write a comment..." %></p>
+  </div>
+
+  <% unless local_assigns[:hide_guest_name] %>
+    <% unless defined?(current_user) && current_user %>
+      <div class="field">
+        <p><%= f.label :guest_name, "Your Name" %></p>
+        <p><%= f.text_field :guest_name, placeholder: "Enter your name" %></p>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit "Post Comment" %>
+  </div>
+<% end %>

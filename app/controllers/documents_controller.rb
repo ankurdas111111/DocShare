@@ -27,7 +27,7 @@ class DocumentsController < ApplicationController
   private
 
   def set_document
-    @document = Document.find(params[:id])
+    @document = Document.includes(comments: :user).find(params[:id])
   end
 
   def authorize_owner!

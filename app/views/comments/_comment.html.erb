@@ -1,0 +1,10 @@
+<div class="comment" style="border-bottom: 1px solid #eee; padding: 8px 0;">
+  <strong><%= comment.author_name %></strong>
+  <% if comment.page_number.present? %>
+    <span style="color: #666;">(Page <%= comment.page_number %>)</span>
+  <% end %>
+  <br>
+  <span><%= comment.body %></span>
+  <br>
+  <small style="color: #999;"><%= time_ago_in_words(comment.created_at) %> ago</small>
+</div>

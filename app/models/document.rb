@@ -2,6 +2,7 @@ class Document < ApplicationRecord
   belongs_to :user
 
   has_one :share, dependent: :destroy
+  has_many :comments, dependent: :destroy
   has_one_attached :file
 
   scope :search_by_title, ->(query) {

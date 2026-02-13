@@ -3,10 +3,12 @@ Rails.application.routes.draw do
 
   resources :documents, only: [ :new, :create, :show ] do
     resource :share, only: [ :create ]
+    resources :comments, only: [ :create ]
   end
 
   # Public access to shared documents (anonymous users)
-  get "shared/:token", to: "shared_documents#show", as: :shared_document
+  get  "shared/:token", to: "shared_documents#show", as: :shared_document
+  post "shared/:token/comments", to: "shared_documents#add_comment", as: :shared_document_comments
 
   # Authenticated users land on the dashboard
   root "dashboard#index"

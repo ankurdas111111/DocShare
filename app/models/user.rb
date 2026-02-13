@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   # Order matters: shares must be destroyed before documents
   has_many :shares, dependent: :destroy
+  has_many :comments, dependent: :nullify
   has_many :documents, dependent: :destroy
 
   validates :name, presence: true
