@@ -1,0 +1,21 @@
+<h1>Upload PDF</h1>
+
+<%= form_with(model: @document) do |f| %>
+  <%= render "shared/error_messages", resource: @document %>
+
+  <div class="field">
+    <p><%= f.label :title, "Title (optional — defaults to filename)" %></p>
+    <p><%= f.text_field :title %></p>
+  </div>
+
+  <div class="field">
+    <p><%= f.label :file, "PDF File" %></p>
+    <p><%= f.file_field :file, accept: "application/pdf" %></p>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Upload" %>
+  </div>
+<% end %>
+
+<%= link_to "Back to Dashboard", root_path %>

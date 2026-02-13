@@ -1,4 +1,18 @@
 <h1>Welcome, <%= current_user.name %>!</h1>
-<p>This is your dashboard. PDFs will appear here soon.</p>
 
+<%= link_to "Upload PDF", new_document_path %> |
 <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete } %>
+
+<hr>
+
+<h2>Your Documents</h2>
+
+<% if current_user.documents.any? %>
+  <ul>
+    <% current_user.documents.order(created_at: :desc).each do |doc| %>
+      <li><%= doc.title %> — uploaded <%= time_ago_in_words(doc.created_at) %> ago</li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No PDFs uploaded yet. <%= link_to "Upload your first PDF", new_document_path %>.</p>
+<% end %>

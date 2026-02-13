@@ -8,7 +8,7 @@ class Document < ApplicationRecord
   validate :file_must_be_pdf
   validate :file_must_be_under_size_limit
 
-  MAX_FILE_SIZE = 10 # megabytes
+  MAX_FILE_SIZE = 10 #in_mb
 
   private
 
