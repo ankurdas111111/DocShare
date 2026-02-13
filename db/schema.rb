@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_13_113732) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_13_120234) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,7 +56,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_13_113732) do
     t.string "token"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["document_id"], name: "index_shares_on_document_id"
+    t.index ["document_id"], name: "index_shares_on_document_id", unique: true
     t.index ["token"], name: "index_shares_on_token", unique: true
     t.index ["user_id"], name: "index_shares_on_user_id"
   end

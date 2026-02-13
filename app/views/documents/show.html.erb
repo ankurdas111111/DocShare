@@ -8,6 +8,19 @@
 
 <hr>
 
+<h3>Share</h3>
+
+<% if @document.share.present? %>
+  <p>
+    Share link:
+    <input type="text" value="<%= shared_document_url(@document.share.token) %>" readonly style="width: 400px;" id="share-link">
+  </p>
+<% else %>
+  <%= button_to "Generate Share Link", document_share_path(@document), method: :post %>
+<% end %>
+
+<hr>
+
 <% if @document.file.attached? %>
   <iframe
     src="<%= rails_blob_path(@document.file, disposition: "inline") %>"
