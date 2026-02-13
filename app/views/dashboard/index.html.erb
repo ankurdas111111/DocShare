@@ -18,7 +18,7 @@
 <% if @documents.any? %>
   <ul>
     <% @documents.each do |doc| %>
-      <li><%= doc.title %> — uploaded <%= time_ago_in_words(doc.created_at) %> ago</li>
+      <li><%= link_to doc.title, document_path(doc) %> — uploaded <%= time_ago_in_words(doc.created_at) %> ago</li>
     <% end %>
   </ul>
 <% else %>

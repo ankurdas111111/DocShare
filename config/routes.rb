@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  resources :documents, only: [ :new, :create ]
+  resources :documents, only: [ :new, :create, :show ]
 
   # Authenticated users land on the dashboard
   root "dashboard#index"
