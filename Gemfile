@@ -23,6 +23,9 @@ gem "devise"
 # Email delivery via Resend [https://resend.com/docs/send-with-ruby-on-rails]
 gem "resend"
 
+# Markdown rendering for comment formatting [https://github.com/vmg/redcarpet]
+gem "redcarpet"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 

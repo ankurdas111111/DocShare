@@ -14,7 +14,7 @@
       <small>· <%= time_ago_in_words(comment.updated_at) %> ago</small>
     </summary>
     <div style="padding: 8px 0 0 16px;">
-      <span><%= comment.body %></span>
+      <span class="comment-body"><%= render_markdown(comment.body) %></span>
       <br>
       <small style="color: #999;">Posted <%= time_ago_in_words(comment.created_at) %> ago</small>
 
@@ -26,7 +26,7 @@
               <strong style="font-size: 13px;"><%= reply.author_name %></strong>
               <small style="color: #999;">· <%= time_ago_in_words(reply.created_at) %> ago</small>
               <br>
-              <span style="font-size: 13px;"><%= reply.body %></span>
+              <span style="font-size: 13px;" class="comment-body"><%= render_markdown(reply.body) %></span>
             </div>
           <% end %>
         </div>
@@ -50,7 +50,7 @@
       <span style="color: #666;">(Page <%= comment.page_number %>)</span>
     <% end %>
     <br>
-    <span><%= comment.body %></span>
+    <span class="comment-body"><%= render_markdown(comment.body) %></span>
     <br>
     <small style="color: #999;"><%= time_ago_in_words(comment.created_at) %> ago</small>
 
@@ -83,7 +83,7 @@
             <strong style="font-size: 13px;"><%= reply.author_name %></strong>
             <small style="color: #999;">· <%= time_ago_in_words(reply.created_at) %> ago</small>
             <br>
-            <span style="font-size: 13px;"><%= reply.body %></span>
+            <span style="font-size: 13px;" class="comment-body"><%= render_markdown(reply.body) %></span>
             <% if defined?(current_user) && reply.editable_by?(current_user) %>
               <br>
               <%= link_to "Edit",
