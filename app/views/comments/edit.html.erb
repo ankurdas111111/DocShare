@@ -6,9 +6,10 @@
     <p><%= f.number_field :page_number, min: 1 %></p>
   </div>
 
-  <div class="field">
+  <div class="field" data-controller="markdown-toolbar">
     <p><%= f.label :body, "Comment" %></p>
-    <p><%= f.text_area :body, rows: 3 %></p>
+    <%= render "comments/markdown_toolbar" %>
+    <p><%= f.text_area :body, rows: 3, data: { markdown_toolbar_target: "textarea" } %></p>
   </div>
 
   <div class="actions">

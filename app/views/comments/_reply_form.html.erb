@@ -1,8 +1,9 @@
 <%= form_with(model: [document, Comment.new], local: true) do |f| %>
   <%= f.hidden_field :parent_id, value: parent.id %>
 
-  <div class="field">
-    <%= f.text_area :body, rows: 2, placeholder: "Write a reply...", style: "width: 100%; font-size: 13px;" %>
+  <div class="field" data-controller="markdown-toolbar">
+    <%= render "comments/markdown_toolbar" %>
+    <%= f.text_area :body, rows: 2, placeholder: "Write a reply... (**bold**, _italic_, - bullets)", style: "width: 100%; font-size: 13px;", data: { markdown_toolbar_target: "textarea" } %>
   </div>
 
   <% unless defined?(current_user) && current_user %>
