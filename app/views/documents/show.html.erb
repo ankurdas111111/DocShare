@@ -36,24 +36,21 @@
 
   <%# Comments Sidebar %>
   <div style="width: 350px; max-height: 850px; overflow-y: auto; border-left: 1px solid #ccc; padding-left: 16px;">
-    <h3>Comments (<%= @document.comments.top_level.active.count %>)</h3>
+    <h3>Comments (<%= @active_comments.size %>)</h3>
 
     <%= render partial: "comments/form", locals: { document: @document, hide_guest_name: true } %>
 
     <hr>
 
-    <% active_comments = @document.comments.top_level.active.order(created_at: :desc) %>
-    <% resolved_comments = @document.comments.top_level.resolved.order(created_at: :desc) %>
-
-    <% if active_comments.any? %>
-      <%= render partial: "comments/comment", collection: active_comments %>
+    <% if @active_comments.any? %>
+      <%= render partial: "comments/comment", collection: @active_comments %>
     <% else %>
       <p style="color: #999;">No comments yet.</p>
     <% end %>
 
-    <% if resolved_comments.any? %>
-      <h4 style="color: #999; margin-top: 16px;">Resolved (<%= resolved_comments.count %>)</h4>
-      <%= render partial: "comments/comment", collection: resolved_comments %>
+    <% if @resolved_comments.any? %>
+      <h4 style="color: #999; margin-top: 16px;">Resolved (<%= @resolved_comments.size %>)</h4>
+      <%= render partial: "comments/comment", collection: @resolved_comments %>
     <% end %>
   </div>
 </div>

@@ -7,10 +7,17 @@ class DocumentsController < ApplicationController
   end
 
   def show
+    @active_comments = @document.comments.top_level.active.order(created_at: :desc)
+    @resolved_comments = @document.comments.top_level.resolved.order(created_at: :desc)
   end
 
   def create
     @document = current_user.documents.build(document_params)
+
+    # Pass the raw upload IO so the model can verify PDF magic bytes
+    # before Active Storage persists the blob.
+    uploaded_file = params.dig(:document, :file)
+    @document.upload_io = uploaded_file.tempfile if uploaded_file.respond_to?(:tempfile)
 
     # Default title to original filename if not provided
     if @document.title.blank? && @document.file.attached?
@@ -27,7 +34,7 @@ class DocumentsController < ApplicationController
   private
 
   def set_document
-    @document = Document.includes(comments: :user).find(params[:id])
+    @document = Document.includes(comments: [:user, { replies: :user }]).find(params[:id])
   end
 
   def authorize_owner!

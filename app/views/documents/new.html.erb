@@ -1,6 +1,6 @@
 <h1>Upload PDF</h1>
 
-<%= form_with(model: @document) do |f| %>
+<%= form_with(model: @document, local: true) do |f| %>
   <%= render "shared/error_messages", resource: @document %>
 
   <div class="field">

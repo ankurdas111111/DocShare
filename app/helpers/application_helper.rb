@@ -7,7 +7,8 @@ module ApplicationHelper
     renderer = Redcarpet::Render::HTML.new(
       hard_wrap:       true,  # Convert newlines to <br>
       no_images:       true,  # Disallow images for security
-      no_links:        false  # Allow links
+      no_links:        false, # Allow links
+      link_attributes: { rel: "noopener noreferrer", target: "_blank" }  # Prevent tabnabbing
     )
 
     markdown = Redcarpet::Markdown.new(renderer,

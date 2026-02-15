@@ -4,8 +4,8 @@ class Comment < ApplicationRecord
   belongs_to :parent, class_name: "Comment", optional: true
   has_many :replies, class_name: "Comment", foreign_key: :parent_id, dependent: :destroy
 
-  validates :body, presence: true
-  validates :guest_name, presence: true, unless: :user_id?
+  validates :body, presence: true, length: { maximum: 10_000 }
+  validates :guest_name, presence: true, length: { maximum: 255 }, unless: :user_id?
   validates :page_number, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
 
   scope :active, -> { where(resolved: false) }

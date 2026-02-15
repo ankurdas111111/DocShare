@@ -8,6 +8,12 @@ class CommentsController < ApplicationController
     @comment = @document.comments.build(comment_params)
     @comment.user = current_user
 
+    # Validate parent belongs to the same document (prevent IDOR)
+    if @comment.parent_id.present? && !@document.comments.exists?(id: @comment.parent_id)
+      redirect_to document_path(@document), alert: "Invalid parent comment."
+      return
+    end
+
     if @comment.save
       redirect_to document_path(@document), notice: "Comment added."
     else

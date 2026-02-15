@@ -1,14 +1,17 @@
-<%= form_with(model: [document, Comment.new], local: true) do |f| %>
-  <%= f.hidden_field :parent_id, value: parent.id %>
+<%# Use shared endpoint when share_token is present, otherwise use the authenticated route %>
+<% form_url = local_assigns[:share_token] ? shared_document_comments_path(share_token) : document_comments_path(document) %>
+
+<%= form_with(url: form_url, method: :post, local: true) do |f| %>
+  <%= f.hidden_field :parent_id, value: parent.id, name: "comment[parent_id]" %>
 
   <div class="field" data-controller="markdown-toolbar">
     <%= render "comments/markdown_toolbar" %>
-    <%= f.text_area :body, rows: 2, placeholder: "Write a reply... (**bold**, _italic_, - bullets)", style: "width: 100%; font-size: 13px;", data: { markdown_toolbar_target: "textarea" } %>
+    <%= f.text_area :body, rows: 2, placeholder: "Write a reply... (**bold**, _italic_, - bullets)", style: "width: 100%; font-size: 13px;", name: "comment[body]", data: { markdown_toolbar_target: "textarea" } %>
   </div>
 
   <% unless defined?(current_user) && current_user %>
     <div class="field">
-      <%= f.text_field :guest_name, placeholder: "Your name", style: "font-size: 13px; margin-top: 4px;" %>
+      <%= f.text_field :guest_name, placeholder: "Your name", style: "font-size: 13px; margin-top: 4px;", name: "comment[guest_name]" %>
     </div>
   <% end %>
 
