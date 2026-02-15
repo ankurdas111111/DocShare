@@ -7,12 +7,12 @@ local:
   root: <%= Rails.root.join("storage") %>
 
 # Cloudinary — used in production (Render deploy)
-# Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET in env
-# cloudinary:
-#   service: Cloudinary
-#   cloud_name: <%= ENV["CLOUDINARY_CLOUD_NAME"] %>
-#   api_key: <%= ENV["CLOUDINARY_API_KEY"] %>
-#   api_secret: <%= ENV["CLOUDINARY_API_SECRET"] %>
+# Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, STORAGE_SERVICE=cloudinary in env
+cloudinary:
+  service: Cloudinary
+  cloud_name: <%= ENV["CLOUDINARY_CLOUD_NAME"] %>
+  api_key: <%= ENV["CLOUDINARY_API_KEY"] %>
+  api_secret: <%= ENV["CLOUDINARY_API_SECRET"] %>
 
 # AWS S3 — available as an alternative production backend
 # Set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_BUCKET in env

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_15_082200) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_15_085629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_15_082200) do
     t.boolean "resolved", default: false, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["document_id", "parent_id", "resolved", "created_at"], name: "index_comments_on_doc_parent_resolved_created"
     t.index ["document_id"], name: "index_comments_on_document_id"
     t.index ["parent_id"], name: "index_comments_on_parent_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
@@ -59,7 +60,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_15_082200) do
 
   create_table "documents", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "title"
+    t.string "title", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id", "created_at"], name: "index_documents_on_user_id_and_created_at"
@@ -69,7 +70,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_15_082200) do
   create_table "shares", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "document_id", null: false
-    t.string "token"
+    t.datetime "expires_at"
+    t.string "token", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["document_id"], name: "index_shares_on_document_id", unique: true

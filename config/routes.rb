@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  resources :documents, only: [ :new, :create, :show ] do
-    resource :share, only: [ :create ]
+  resources :documents, only: [ :new, :create, :show, :destroy ] do
+    resource :share, only: [ :create, :destroy ]
     resources :comments, only: [ :create, :edit, :update, :destroy ] do
       patch :toggle_resolved, on: :member
     end

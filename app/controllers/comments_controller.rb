@@ -38,9 +38,12 @@ class CommentsController < ApplicationController
   end
 
   def toggle_resolved
-    @comment.update!(resolved: !@comment.resolved)
-    status = @comment.resolved? ? "resolved" : "reopened"
-    redirect_to document_path(@document), notice: "Comment #{status}."
+    if @comment.update(resolved: !@comment.resolved)
+      status = @comment.resolved? ? "resolved" : "reopened"
+      redirect_to document_path(@document), notice: "Comment #{status}."
+    else
+      redirect_to document_path(@document), alert: "Could not update comment."
+    end
   end
 
   private

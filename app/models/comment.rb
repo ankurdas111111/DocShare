@@ -7,6 +7,7 @@ class Comment < ApplicationRecord
   validates :body, presence: true, length: { maximum: 10_000 }
   validates :guest_name, presence: true, length: { maximum: 255 }, unless: :user_id?
   validates :page_number, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+  validate :parent_must_be_top_level
 
   scope :active, -> { where(resolved: false) }
   scope :resolved, -> { where(resolved: true) }
@@ -25,5 +26,12 @@ class Comment < ApplicationRecord
   # Can this comment be resolved by the given user? (only the document owner)
   def resolvable_by?(user)
     user.present? && document.user == user
+  end
+
+  private
+  def parent_must_be_top_level
+    if parent.present? && parent.parent_id.present?
+      errors.add(:parent, "can only reply to top-level comments")
+    end
   end
 end

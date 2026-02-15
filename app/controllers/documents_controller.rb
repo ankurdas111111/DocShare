@@ -1,6 +1,6 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: [ :show ]
-  before_action :authorize_owner!, only: [ :show ]
+  before_action :set_document, only: [ :show, :destroy ]
+  before_action :authorize_owner!, only: [ :show, :destroy ]
 
   def new
     @document = Document.new
@@ -9,6 +9,11 @@ class DocumentsController < ApplicationController
   def show
     @active_comments = @document.comments.top_level.active.order(created_at: :desc)
     @resolved_comments = @document.comments.top_level.resolved.order(created_at: :desc)
+  end
+
+  def destroy
+    @document.destroy
+    redirect_to root_path, notice: "Document deleted."
   end
 
   def create
@@ -34,7 +39,7 @@ class DocumentsController < ApplicationController
   private
 
   def set_document
-    @document = Document.includes(comments: [:user, { replies: :user }]).find(params[:id])
+    @document = Document.includes(:user, comments: [:user, { replies: :user }]).find(params[:id])
   end
 
   def authorize_owner!

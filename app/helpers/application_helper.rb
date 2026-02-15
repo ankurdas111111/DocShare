@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include Pagy::Loader
+
   # Render markdown text as sanitized HTML.
   # Supports bold, italic, strikethrough, lists, links, and code.
   def render_markdown(text)

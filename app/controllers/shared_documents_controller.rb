@@ -29,7 +29,12 @@ class SharedDocumentsController < ApplicationController
 
   def set_shared_document
     @share = Share.find_by!(token: params[:token])
-    @document = Document.includes(comments: [:user, { replies: :user }]).find(@share.document_id)
+
+    if @share.expired?
+      raise ActiveRecord::RecordNotFound, "Share link has expired"
+    end
+
+    @document = Document.includes(:user, comments: [:user, { replies: :user }]).find(@share.document_id)
   end
 
   def comment_params

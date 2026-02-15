@@ -21,6 +21,8 @@
       <li><%= link_to doc.title, document_path(doc) %> — uploaded <%= time_ago_in_words(doc.created_at) %> ago</li>
     <% end %>
   </ul>
+
+  <%== series_nav(@pagy) if @pagy.pages > 1 %>
 <% else %>
   <% if params[:query].present? %>
     <p>No documents matching "<%= params[:query] %>".</p>

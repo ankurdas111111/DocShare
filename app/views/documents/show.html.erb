@@ -4,17 +4,26 @@
   Uploaded by <%= @document.user.name %> — <%= time_ago_in_words(@document.created_at) %> ago
 </p>
 
-<%= link_to "Back to Dashboard", root_path %>
+<%= link_to "Back to Dashboard", root_path %> |
+<%= button_to "Delete Document", document_path(@document), method: :delete,
+    data: { turbo_confirm: "Are you sure? This will permanently delete this PDF and all its comments." },
+    style: "display: inline; font-size: 14px; color: red; background: none; border: none; cursor: pointer; text-decoration: underline;" %>
 
 <hr>
 
 <h3>Share</h3>
 
-<% if @document.share.present? %>
+<% if @document.share.present? && @document.share.active? %>
   <p>
     Share link:
     <input type="text" value="<%= shared_document_url(@document.share.token) %>" readonly style="width: 400px;" id="share-link">
   </p>
+  <% if @document.share.expires_at.present? %>
+    <p style="font-size: 13px; color: #666;">Expires <%= time_ago_in_words(@document.share.expires_at) %> from now (<%= @document.share.expires_at.strftime("%b %d, %Y") %>)</p>
+  <% end %>
+  <%= button_to "Revoke Share Link", document_share_path(@document), method: :delete,
+      data: { turbo_confirm: "Revoke this share link? Anyone with the link will lose access." },
+      style: "font-size: 13px; color: red;" %>
 <% else %>
   <%= button_to "Generate Share Link", document_share_path(@document), method: :post %>
 <% end %>
