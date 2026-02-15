@@ -26,13 +26,17 @@ gem "resend"
 # Markdown rendering for comment formatting [https://github.com/vmg/redcarpet]
 gem "redcarpet"
 
+# Pagination [https://github.com/ddnexus/pagy]
+gem "pagy", "~> 43.2"
+
+# Rate limiting and throttling [https://github.com/rack/rack-attack]
+gem "rack-attack", "~> 6.8"
+
+# Cloud storage for Active Storage [https://cloudinary.com]
+gem "cloudinary", "~> 2.4"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
-
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cache"
-gem "solid_queue"
-gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -74,6 +78,3 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "pagy", "~> 43.2"
-
-gem "rack-attack", "~> 6.8"
