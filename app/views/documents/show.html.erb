@@ -23,11 +23,20 @@
     <% if @document.share.expires_at.present? %>
       <p class="share-meta">Expires <%= time_ago_in_words(@document.share.expires_at) %> from now (<%= @document.share.expires_at.strftime("%b %d, %Y") %>)</p>
     <% end %>
+
+    <%= form_with(url: document_share_path(@document), method: :post, local: true, class: "share-email-form") do |f| %>
+      <%= f.email_field :recipient_email, placeholder: "Email address to invite (optional)", class: "share-email-input", aria: { label: "Recipient email" } %>
+      <%= f.submit "Send Invite", class: "btn btn-secondary btn-sm" %>
+    <% end %>
+
     <%= button_to "Revoke Share Link", document_share_path(@document), method: :delete,
         class: "btn btn-danger btn-sm",
         data: { turbo_confirm: "Revoke this share link? Anyone with the link will lose access." } %>
   <% else %>
-    <%= button_to "Generate Share Link", document_share_path(@document), method: :post, class: "btn btn-primary btn-sm" %>
+    <%= form_with(url: document_share_path(@document), method: :post, local: true, class: "share-generate-form") do |f| %>
+      <%= f.email_field :recipient_email, placeholder: "Email address to invite (optional)", class: "share-email-input", aria: { label: "Recipient email" } %>
+      <%= f.submit "Generate Share Link", class: "btn btn-primary btn-sm" %>
+    <% end %>
   <% end %>
 </div>
 

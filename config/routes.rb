@@ -9,8 +9,11 @@ Rails.application.routes.draw do
   end
 
   # Public access to shared documents (anonymous users)
-  get  "shared/:token", to: "shared_documents#show", as: :shared_document
-  post "shared/:token/comments", to: "shared_documents#add_comment", as: :shared_document_comments
+  get    "shared/:token",                    to: "shared_documents#show",            as: :shared_document
+  post   "shared/:token/comments",           to: "shared_documents#add_comment",     as: :shared_document_comments
+  get    "shared/:token/comments/:id/edit",  to: "shared_documents#edit_comment",    as: :edit_shared_document_comment
+  patch  "shared/:token/comments/:id",       to: "shared_documents#update_comment",  as: :shared_document_comment
+  delete "shared/:token/comments/:id",       to: "shared_documents#destroy_comment"
 
   # Authenticated users land on the dashboard
   root "dashboard#index"

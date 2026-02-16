@@ -25,6 +25,30 @@ class SharedDocumentsController < ApplicationController
     end
   end
 
+  def edit_comment
+    @comment = @document.comments.find(params[:id])
+    return unless authorize_shared_author!
+  end
+
+  def update_comment
+    @comment = @document.comments.find(params[:id])
+    return unless authorize_shared_author!
+
+    if @comment.update(shared_comment_update_params)
+      redirect_to shared_document_path(@share.token), notice: "Comment updated."
+    else
+      redirect_to shared_document_path(@share.token), alert: @comment.errors.full_messages.join(", ")
+    end
+  end
+
+  def destroy_comment
+    @comment = @document.comments.find(params[:id])
+    return unless authorize_shared_author!
+
+    @comment.destroy
+    redirect_to shared_document_path(@share.token), notice: "Comment deleted."
+  end
+
   private
 
   def set_shared_document
@@ -39,5 +63,16 @@ class SharedDocumentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(:body, :page_number, :guest_name, :parent_id)
+  end
+
+  def shared_comment_update_params
+    params.require(:comment).permit(:body, :page_number)
+  end
+
+  def authorize_shared_author!
+    return true if user_signed_in? && @comment.editable_by?(current_user)
+
+    redirect_to shared_document_path(@share.token), alert: "Not authorized."
+    false
   end
 end

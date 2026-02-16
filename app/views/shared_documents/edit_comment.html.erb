@@ -1,0 +1,30 @@
+<% content_for(:narrow) { true } %>
+
+<h2>Edit Comment</h2>
+
+<div class="card">
+  <%= form_with(url: shared_document_comment_path(@share.token, @comment), method: :patch, local: true) do |f| %>
+    <div class="field">
+      <%= f.label :page_number, "Page #" %>
+      <%= f.number_field :page_number, value: @comment.page_number, min: 1 %>
+    </div>
+
+    <div class="comment-composer">
+      <label class="comment-composer__label comment-composer__label--padded">Comment</label>
+      <div class="comment-composer__editor" data-controller="markdown-toolbar">
+        <%= render "comments/markdown_toolbar" %>
+        <div class="comment-composer__editable is-empty"
+             contenteditable="true"
+             data-placeholder="Write a comment..."
+             data-markdown-toolbar-target="editor"
+             data-action="input->markdown-toolbar#sync paste->markdown-toolbar#handlePaste keydown->markdown-toolbar#handleKeydown"></div>
+        <%= f.text_area :body, value: @comment.body, name: "comment[body]", data: { markdown_toolbar_target: "input" }, class: "comment-composer__hidden" %>
+      </div>
+    </div>
+
+    <div class="actions actions--spaced">
+      <%= f.submit "Update Comment" %>
+      <%= link_to "Cancel", shared_document_path(@share.token) %>
+    </div>
+  <% end %>
+</div>

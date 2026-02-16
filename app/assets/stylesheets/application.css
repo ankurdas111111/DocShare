@@ -1185,6 +1185,25 @@ hr {
   margin-top: 6px;
 }
 
+.share-email-form,
+.share-generate-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.share-email-input {
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
 /* ── Document header ────────────────────────────────────── */
 
 .doc-header {
@@ -1292,6 +1311,16 @@ hr {
   }
 
   .share-link-group input {
+    max-width: 100%;
+  }
+
+  .share-email-form,
+  .share-generate-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .share-email-input {
     max-width: 100%;
   }
 

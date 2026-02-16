@@ -11,10 +11,19 @@ class SharesController < ApplicationController
       expires_at: Share::DEFAULT_EXPIRY.from_now
     )
 
-    redirect_to @document, notice: "Share link generated!"
+    send_invite_email if params[:recipient_email].present?
+
+    notice = "Share link generated!"
+    notice += " Invitation sent to #{params[:recipient_email]}." if params[:recipient_email].present?
+    redirect_to @document, notice: notice
   rescue ActiveRecord::RecordNotUnique
     @share = @document.share.reload
-    redirect_to @document, notice: "Share link generated!"
+
+    send_invite_email if params[:recipient_email].present?
+
+    notice = "Share link generated!"
+    notice += " Invitation sent to #{params[:recipient_email]}." if params[:recipient_email].present?
+    redirect_to @document, notice: notice
   end
 
   def destroy
@@ -26,5 +35,12 @@ class SharesController < ApplicationController
 
   def set_document
     @document = current_user.documents.find(params[:document_id])
+  end
+
+  def send_invite_email
+    email = params[:recipient_email].to_s.strip
+    return unless email.match?(URI::MailTo::EMAIL_REGEXP)
+
+    ShareMailer.invite(@share, email).deliver_later
   end
 end

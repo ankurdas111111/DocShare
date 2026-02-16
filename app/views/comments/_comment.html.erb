@@ -53,11 +53,19 @@
     <% if is_author || is_owner %>
       <div class="comment__actions">
         <% if is_author %>
-          <%= link_to "Edit", edit_document_comment_path(document, comment) %>
-          <%= button_to "Delete",
-                document_comment_path(document, comment),
-                method: :delete, class: "btn-delete",
-                data: { turbo_confirm: "Delete this comment?" } %>
+          <% if local_assigns[:share_token] %>
+            <%= link_to "Edit", edit_shared_document_comment_path(share_token, comment) %>
+            <%= button_to "Delete",
+                  shared_document_comment_path(share_token, comment),
+                  method: :delete, class: "btn-delete",
+                  data: { turbo_confirm: "Delete this comment?" } %>
+          <% else %>
+            <%= link_to "Edit", edit_document_comment_path(document, comment) %>
+            <%= button_to "Delete",
+                  document_comment_path(document, comment),
+                  method: :delete, class: "btn-delete",
+                  data: { turbo_confirm: "Delete this comment?" } %>
+          <% end %>
         <% end %>
         <% if is_owner %>
           <%= button_to "Resolve",
@@ -78,11 +86,19 @@
             <div class="reply__body comment-body"><%= render_markdown(reply.body) %></div>
             <% if defined?(current_user) && reply.editable_by?(current_user) %>
               <div class="comment__actions">
-                <%= link_to "Edit", edit_document_comment_path(document, reply) %>
-                <%= button_to "Delete",
-                      document_comment_path(document, reply),
-                      method: :delete, class: "btn-delete",
-                      data: { turbo_confirm: "Delete this reply?" } %>
+                <% if local_assigns[:share_token] %>
+                  <%= link_to "Edit", edit_shared_document_comment_path(share_token, reply) %>
+                  <%= button_to "Delete",
+                        shared_document_comment_path(share_token, reply),
+                        method: :delete, class: "btn-delete",
+                        data: { turbo_confirm: "Delete this reply?" } %>
+                <% else %>
+                  <%= link_to "Edit", edit_document_comment_path(document, reply) %>
+                  <%= button_to "Delete",
+                        document_comment_path(document, reply),
+                        method: :delete, class: "btn-delete",
+                        data: { turbo_confirm: "Delete this reply?" } %>
+                <% end %>
               </div>
             <% end %>
           </div>
