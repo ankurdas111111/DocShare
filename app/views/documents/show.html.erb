@@ -1,65 +1,71 @@
-<h1><%= @document.title %></h1>
-
-<p>
-  Uploaded by <%= @document.user.name %> — <%= time_ago_in_words(@document.created_at) %> ago
+<div class="doc-header">
+  <h1><%= @document.title %></h1>
+</div>
+<p class="doc-header__meta">
+  Uploaded by <%= @document.user.name %> · <%= time_ago_in_words(@document.created_at) %> ago
 </p>
 
-<%= link_to "Back to Dashboard", root_path %> |
-<%= button_to "Delete Document", document_path(@document), method: :delete,
-    data: { turbo_confirm: "Are you sure? This will permanently delete this PDF and all its comments." },
-    style: "display: inline; font-size: 14px; color: red; background: none; border: none; cursor: pointer; text-decoration: underline;" %>
+<div class="doc-actions">
+  <%= link_to "← Dashboard", root_path %>
+  <%= button_to "Delete", document_path(@document), method: :delete,
+      class: "btn btn-danger btn-sm",
+      data: { turbo_confirm: "Are you sure? This will permanently delete this PDF and all its comments." } %>
+</div>
 
-<hr>
-
-<h3>Share</h3>
-
-<% if @document.share.present? && @document.share.active? %>
-  <p>
-    Share link:
-    <input type="text" value="<%= shared_document_url(@document.share.token) %>" readonly style="width: 400px;" id="share-link">
-  </p>
-  <% if @document.share.expires_at.present? %>
-    <p style="font-size: 13px; color: #666;">Expires <%= time_ago_in_words(@document.share.expires_at) %> from now (<%= @document.share.expires_at.strftime("%b %d, %Y") %>)</p>
+<div class="share-section">
+  <h3>Share</h3>
+  <% if @document.share.present? && @document.share.active? %>
+    <div class="share-link-group">
+      <label for="share-link" class="sr-only">Share link</label>
+      <input type="text" value="<%= shared_document_url(@document.share.token) %>" readonly id="share-link" aria-label="Share link">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('share-link').value);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',2000)">Copy</button>
+    </div>
+    <% if @document.share.expires_at.present? %>
+      <p class="share-meta">Expires <%= time_ago_in_words(@document.share.expires_at) %> from now (<%= @document.share.expires_at.strftime("%b %d, %Y") %>)</p>
+    <% end %>
+    <%= button_to "Revoke Share Link", document_share_path(@document), method: :delete,
+        class: "btn btn-danger btn-sm",
+        data: { turbo_confirm: "Revoke this share link? Anyone with the link will lose access." } %>
+  <% else %>
+    <%= button_to "Generate Share Link", document_share_path(@document), method: :post, class: "btn btn-primary btn-sm" %>
   <% end %>
-  <%= button_to "Revoke Share Link", document_share_path(@document), method: :delete,
-      data: { turbo_confirm: "Revoke this share link? Anyone with the link will lose access." },
-      style: "font-size: 13px; color: red;" %>
-<% else %>
-  <%= button_to "Generate Share Link", document_share_path(@document), method: :post %>
-<% end %>
+</div>
 
-<hr>
-
-<div style="display: flex; gap: 20px;"
+<div class="pdf-layout"
      data-controller="pdf-viewer"
      data-pdf-viewer-url-value="<%= rails_blob_path(@document.file, disposition: "inline") %>">
 
   <%# PDF Viewer %>
-  <div style="flex: 1;">
-    <p data-pdf-viewer-target="pageInfo" style="text-align: center; font-weight: bold;"></p>
-    <div data-pdf-viewer-target="container"
-         style="max-height: 800px; overflow-y: auto; border: 1px solid #ccc; background: #f5f5f5; padding: 8px;">
-      <p style="text-align: center; color: #999;">Loading PDF...</p>
+  <div class="pdf-viewer">
+    <p class="pdf-viewer__info" data-pdf-viewer-target="pageInfo"></p>
+    <div class="pdf-viewer__container" data-pdf-viewer-target="container">
+      <p class="pdf-viewer__loading">Loading PDF...</p>
     </div>
   </div>
 
   <%# Comments Sidebar %>
-  <div style="width: 350px; max-height: 850px; overflow-y: auto; border-left: 1px solid #ccc; padding-left: 16px;">
-    <h3>Comments (<%= @active_comments.size %>)</h3>
+  <div class="comments-sidebar">
+    <div class="comments-sidebar__header">
+      <h3>Comments (<%= @active_comments.size %>)</h3>
+    </div>
 
-    <%= render partial: "comments/form", locals: { document: @document, hide_guest_name: true } %>
+    <div class="comments-sidebar__form">
+      <%= render partial: "comments/form", locals: { document: @document, hide_guest_name: true } %>
+    </div>
 
-    <hr>
+    <div class="comments-sidebar__list">
+      <% if @active_comments.any? %>
+        <%= render partial: "comments/comment", collection: @active_comments %>
+      <% else %>
+        <div class="empty-state--inline">
+          <p>No comments yet. Be the first!</p>
+        </div>
+      <% end %>
 
-    <% if @active_comments.any? %>
-      <%= render partial: "comments/comment", collection: @active_comments %>
-    <% else %>
-      <p style="color: #999;">No comments yet.</p>
-    <% end %>
-
-    <% if @resolved_comments.any? %>
-      <h4 style="color: #999; margin-top: 16px;">Resolved (<%= @resolved_comments.size %>)</h4>
-      <%= render partial: "comments/comment", collection: @resolved_comments %>
-    <% end %>
+      <% if @resolved_comments.any? %>
+        <h4 class="resolved-heading">Resolved (<%= @resolved_comments.size %>)</h4>
+        <%= render partial: "comments/comment", collection: @resolved_comments %>
+      <% end %>
+    </div>
   </div>
 </div>

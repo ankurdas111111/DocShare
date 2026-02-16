@@ -4,18 +4,23 @@
 <%= form_with(url: form_url, method: :post, local: true) do |f| %>
   <%= f.hidden_field :parent_id, value: parent.id, name: "comment[parent_id]" %>
 
-  <div class="field" data-controller="markdown-toolbar">
+  <div class="comment-composer comment-composer--compact" data-controller="markdown-toolbar">
     <%= render "comments/markdown_toolbar" %>
-    <%= f.text_area :body, rows: 2, placeholder: "Write a reply... (**bold**, _italic_, - bullets)", style: "width: 100%; font-size: 13px;", name: "comment[body]", data: { markdown_toolbar_target: "textarea" } %>
-  </div>
+    <div class="comment-composer__editable is-empty"
+         contenteditable="true"
+         data-placeholder="Write a reply..."
+         data-markdown-toolbar-target="editor"
+         data-action="input->markdown-toolbar#sync paste->markdown-toolbar#handlePaste keydown->markdown-toolbar#handleKeydown"></div>
+    <textarea name="comment[body]" data-markdown-toolbar-target="input" class="comment-composer__hidden"></textarea>
 
-  <% unless defined?(current_user) && current_user %>
-    <div class="field">
-      <%= f.text_field :guest_name, placeholder: "Your name", style: "font-size: 13px; margin-top: 4px;", name: "comment[guest_name]" %>
+    <% unless defined?(current_user) && current_user %>
+      <div class="comment-composer__guest">
+        <%= f.text_field :guest_name, id: "reply_guest_#{parent.id}", placeholder: "Your name", name: "comment[guest_name]", class: "comment-composer__guest-input" %>
+      </div>
+    <% end %>
+
+    <div class="comment-composer__actions">
+      <%= f.submit "Reply", class: "btn btn-secondary btn-sm" %>
     </div>
-  <% end %>
-
-  <div class="actions" style="margin-top: 4px;">
-    <%= f.submit "Reply", style: "font-size: 12px;" %>
   </div>
 <% end %>

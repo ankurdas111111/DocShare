@@ -3,108 +3,97 @@
 <% is_author = defined?(current_user) && comment.editable_by?(current_user) %>
 
 <% if comment.resolved? %>
-  <%# Resolved comments collapse into a dropdown %>
-  <details style="border-bottom: 1px solid #eee; padding: 8px 0; opacity: 0.6;">
-    <summary style="cursor: pointer; color: #666;">
+  <details class="comment--resolved">
+    <summary>
       <strong><%= comment.author_name %></strong>
       <% if comment.page_number.present? %>
-        <span>(Page <%= comment.page_number %>)</span>
+        <span class="comment__page">Page <%= comment.page_number %></span>
       <% end %>
       — <em>Resolved</em>
-      <small>· <%= time_ago_in_words(comment.updated_at) %> ago</small>
+      <span class="comment__time">· <%= time_ago_in_words(comment.updated_at) %> ago</span>
     </summary>
-    <div style="padding: 8px 0 0 16px;">
-      <span class="comment-body"><%= render_markdown(comment.body) %></span>
-      <br>
-      <small style="color: #999;">Posted <%= time_ago_in_words(comment.created_at) %> ago</small>
+    <div class="comment--resolved__content">
+      <div class="comment__body comment-body"><%= render_markdown(comment.body) %></div>
+      <span class="comment__time">Posted <%= time_ago_in_words(comment.created_at) %> ago</span>
 
-      <%# Show replies even when resolved %>
       <% if comment.replies.any? %>
-        <div style="margin-top: 8px; padding-left: 12px; border-left: 2px solid #ddd;">
-          <% comment.replies.order(created_at: :asc).each do |reply| %>
-            <div style="padding: 4px 0;">
-              <strong style="font-size: 13px;"><%= reply.author_name %></strong>
-              <small style="color: #999;">· <%= time_ago_in_words(reply.created_at) %> ago</small>
-              <br>
-              <span style="font-size: 13px;" class="comment-body"><%= render_markdown(reply.body) %></span>
+        <div class="replies">
+          <% comment.replies.sort_by(&:created_at).each do |reply| %>
+            <div class="reply">
+              <span class="reply__author"><%= reply.author_name %></span>
+              <span class="comment__time">· <%= time_ago_in_words(reply.created_at) %> ago</span>
+              <div class="reply__body comment-body"><%= render_markdown(reply.body) %></div>
             </div>
           <% end %>
         </div>
       <% end %>
 
       <% if is_owner %>
-        <br>
-        <%= button_to "Unresolve",
-              toggle_resolved_document_comment_path(document, comment),
-              method: :patch,
-              style: "font-size: 12px; margin-top: 4px;" %>
+        <div class="comment__actions">
+          <%= button_to "Unresolve",
+                toggle_resolved_document_comment_path(document, comment),
+                method: :patch, class: "btn-sm" %>
+        </div>
       <% end %>
     </div>
   </details>
 
 <% else %>
-  <%# Active comments shown normally %>
-  <div class="comment" style="border-bottom: 1px solid #eee; padding: 8px 0;">
-    <strong><%= comment.author_name %></strong>
-    <% if comment.page_number.present? %>
-      <span style="color: #666;">(Page <%= comment.page_number %>)</span>
-    <% end %>
-    <br>
-    <span class="comment-body"><%= render_markdown(comment.body) %></span>
-    <br>
-    <small style="color: #999;"><%= time_ago_in_words(comment.created_at) %> ago</small>
-
-    <%# Actions %>
-    <div style="margin-top: 4px;">
-      <% if is_author %>
-        <%= link_to "Edit",
-              edit_document_comment_path(document, comment),
-              style: "font-size: 12px; margin-right: 8px;" %>
-        <%= button_to "Delete",
-              document_comment_path(document, comment),
-              method: :delete,
-              style: "font-size: 12px; margin-right: 8px;",
-              data: { turbo_confirm: "Delete this comment?" } %>
+  <div class="comment">
+    <div class="comment__header">
+      <span class="comment__author"><%= comment.author_name %></span>
+      <% if comment.page_number.present? %>
+        <span class="comment__page">Page <%= comment.page_number %></span>
       <% end %>
-
-      <% if is_owner %>
-        <%= button_to "Resolve",
-              toggle_resolved_document_comment_path(document, comment),
-              method: :patch,
-              style: "font-size: 12px;" %>
-      <% end %>
+      <span class="comment__time"><%= time_ago_in_words(comment.created_at) %> ago</span>
     </div>
 
-    <%# Replies %>
+    <div class="comment__body comment-body"><%= render_markdown(comment.body) %></div>
+
+    <% if is_author || is_owner %>
+      <div class="comment__actions">
+        <% if is_author %>
+          <%= link_to "Edit", edit_document_comment_path(document, comment) %>
+          <%= button_to "Delete",
+                document_comment_path(document, comment),
+                method: :delete, class: "btn-delete",
+                data: { turbo_confirm: "Delete this comment?" } %>
+        <% end %>
+        <% if is_owner %>
+          <%= button_to "Resolve",
+                toggle_resolved_document_comment_path(document, comment),
+                method: :patch, class: "btn-resolve" %>
+        <% end %>
+      </div>
+    <% end %>
+
     <% if comment.replies.any? %>
-      <div style="margin-top: 8px; padding-left: 12px; border-left: 2px solid #ddd;">
-        <% comment.replies.order(created_at: :asc).each do |reply| %>
-          <div style="padding: 4px 0;">
-            <strong style="font-size: 13px;"><%= reply.author_name %></strong>
-            <small style="color: #999;">· <%= time_ago_in_words(reply.created_at) %> ago</small>
-            <br>
-            <span style="font-size: 13px;" class="comment-body"><%= render_markdown(reply.body) %></span>
+      <div class="replies">
+        <% comment.replies.sort_by(&:created_at).each do |reply| %>
+          <div class="reply">
+            <div class="comment__header">
+              <span class="reply__author"><%= reply.author_name %></span>
+              <span class="comment__time">· <%= time_ago_in_words(reply.created_at) %> ago</span>
+            </div>
+            <div class="reply__body comment-body"><%= render_markdown(reply.body) %></div>
             <% if defined?(current_user) && reply.editable_by?(current_user) %>
-              <br>
-              <%= link_to "Edit",
-                    edit_document_comment_path(document, reply),
-                    style: "font-size: 11px; margin-right: 6px;" %>
-              <%= button_to "Delete",
-                    document_comment_path(document, reply),
-                    method: :delete,
-                    style: "font-size: 11px;",
-                    data: { turbo_confirm: "Delete this reply?" } %>
+              <div class="comment__actions">
+                <%= link_to "Edit", edit_document_comment_path(document, reply) %>
+                <%= button_to "Delete",
+                      document_comment_path(document, reply),
+                      method: :delete, class: "btn-delete",
+                      data: { turbo_confirm: "Delete this reply?" } %>
+              </div>
             <% end %>
           </div>
         <% end %>
       </div>
     <% end %>
 
-    <%# Reply toggle — available for authenticated users or shared view visitors %>
     <% if (defined?(current_user) && current_user) || local_assigns[:share_token] %>
-      <details style="margin-top: 6px;">
-        <summary style="cursor: pointer; font-size: 12px; color: #555;">Reply</summary>
-        <div style="padding: 6px 0 0 12px;">
+      <details class="reply-toggle">
+        <summary>Reply</summary>
+        <div class="reply-toggle__content">
           <%= render partial: "comments/reply_form", locals: { document: document, parent: comment, share_token: local_assigns[:share_token] } %>
         </div>
       </details>

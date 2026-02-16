@@ -1,25 +1,30 @@
 <%= form_with(model: [document, Comment.new], local: true) do |f| %>
-  <div class="field">
-    <p><%= f.label :page_number, "Page #" %></p>
-    <p><%= f.number_field :page_number, min: 1, placeholder: "Auto-detected", data: { pdf_viewer_target: "pageNumberInput" } %></p>
-  </div>
+  <div class="comment-composer">
+    <div class="comment-composer__page">
+      <%= f.label :page_number, "Page", class: "comment-composer__label" %>
+      <%= f.number_field :page_number, min: 1, placeholder: "Auto", data: { pdf_viewer_target: "pageNumberInput" }, class: "comment-composer__page-input" %>
+    </div>
 
-  <div class="field" data-controller="markdown-toolbar">
-    <p><%= f.label :body, "Comment" %></p>
-    <%= render "comments/markdown_toolbar" %>
-    <p><%= f.text_area :body, rows: 3, placeholder: "Write a comment... (supports **bold**, _italic_, - bullets)", data: { markdown_toolbar_target: "textarea" } %></p>
-  </div>
+    <div class="comment-composer__editor" data-controller="markdown-toolbar">
+      <%= render "comments/markdown_toolbar" %>
+      <div class="comment-composer__editable is-empty"
+           contenteditable="true"
+           data-placeholder="Write a comment..."
+           data-markdown-toolbar-target="editor"
+           data-action="input->markdown-toolbar#sync paste->markdown-toolbar#handlePaste keydown->markdown-toolbar#handleKeydown"></div>
+      <%= f.text_area :body, data: { markdown_toolbar_target: "input" }, class: "comment-composer__hidden" %>
+    </div>
 
-  <% unless local_assigns[:hide_guest_name] %>
-    <% unless defined?(current_user) && current_user %>
-      <div class="field">
-        <p><%= f.label :guest_name, "Your Name" %></p>
-        <p><%= f.text_field :guest_name, placeholder: "Enter your name" %></p>
-      </div>
+    <% unless local_assigns[:hide_guest_name] %>
+      <% unless defined?(current_user) && current_user %>
+        <div class="comment-composer__guest">
+          <%= f.text_field :guest_name, placeholder: "Your name", class: "comment-composer__guest-input" %>
+        </div>
+      <% end %>
     <% end %>
-  <% end %>
 
-  <div class="actions">
-    <%= f.submit "Post Comment" %>
+    <div class="comment-composer__actions">
+      <%= f.submit "Comment", class: "btn btn-primary btn-sm" %>
+    </div>
   </div>
 <% end %>

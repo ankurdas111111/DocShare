@@ -1,63 +1,68 @@
 <h1><%= @document.title %></h1>
+<p class="doc-header__meta">Shared by <%= @document.user.name %></p>
 
-<p>
-  Shared by <%= @document.user.name %>
-</p>
-
-<hr>
-
-<div style="display: flex; gap: 20px;"
+<div class="pdf-layout"
      data-controller="pdf-viewer"
      data-pdf-viewer-url-value="<%= rails_blob_path(@document.file, disposition: "inline") %>">
 
   <%# PDF Viewer %>
-  <div style="flex: 1;">
-    <p data-pdf-viewer-target="pageInfo" style="text-align: center; font-weight: bold;"></p>
-    <div data-pdf-viewer-target="container"
-         style="max-height: 800px; overflow-y: auto; border: 1px solid #ccc; background: #f5f5f5; padding: 8px;">
-      <p style="text-align: center; color: #999;">Loading PDF...</p>
+  <div class="pdf-viewer">
+    <p class="pdf-viewer__info" data-pdf-viewer-target="pageInfo"></p>
+    <div class="pdf-viewer__container" data-pdf-viewer-target="container">
+      <p class="pdf-viewer__loading">Loading PDF...</p>
     </div>
   </div>
 
   <%# Comments Sidebar %>
-  <div style="width: 350px; max-height: 850px; overflow-y: auto; border-left: 1px solid #ccc; padding-left: 16px;">
-    <h3>Comments (<%= @active_comments.size %>)</h3>
+  <div class="comments-sidebar">
+    <div class="comments-sidebar__header">
+      <h3>Comments (<%= @active_comments.size %>)</h3>
+    </div>
 
-    <%= form_with url: shared_document_comments_path(@share.token), method: :post, local: true do |f| %>
-      <div class="field">
-        <p><%= f.label :page_number, "Page #" %></p>
-        <p><%= f.number_field :page_number, min: 1, placeholder: "Auto-detected", name: "comment[page_number]", data: { pdf_viewer_target: "pageNumberInput" } %></p>
-      </div>
+    <div class="comments-sidebar__form">
+      <%= form_with url: shared_document_comments_path(@share.token), method: :post, local: true do |f| %>
+        <div class="comment-composer">
+          <div class="comment-composer__page">
+            <%= f.label :page_number, "Page", class: "comment-composer__label" %>
+            <%= f.number_field :page_number, min: 1, placeholder: "Auto", name: "comment[page_number]", data: { pdf_viewer_target: "pageNumberInput" }, class: "comment-composer__page-input" %>
+          </div>
 
-      <div class="field" data-controller="markdown-toolbar">
-        <p><%= f.label :body, "Comment" %></p>
-        <%= render "comments/markdown_toolbar" %>
-        <p><%= f.text_area :body, rows: 3, placeholder: "Write a comment... (**bold**, _italic_, - bullets)", name: "comment[body]", data: { markdown_toolbar_target: "textarea" } %></p>
-      </div>
+          <div class="comment-composer__editor" data-controller="markdown-toolbar">
+            <%= render "comments/markdown_toolbar" %>
+            <div class="comment-composer__editable is-empty"
+                 contenteditable="true"
+                 data-placeholder="Write a comment..."
+                 data-markdown-toolbar-target="editor"
+                 data-action="input->markdown-toolbar#sync paste->markdown-toolbar#handlePaste keydown->markdown-toolbar#handleKeydown"></div>
+            <textarea name="comment[body]" data-markdown-toolbar-target="input" class="comment-composer__hidden"></textarea>
+          </div>
 
-      <% unless user_signed_in? %>
-        <div class="field">
-          <p><%= f.label :guest_name, "Your Name" %></p>
-          <p><%= f.text_field :guest_name, placeholder: "Enter your name", name: "comment[guest_name]" %></p>
+          <% unless user_signed_in? %>
+            <div class="comment-composer__guest">
+              <%= f.text_field :guest_name, placeholder: "Your name", name: "comment[guest_name]", class: "comment-composer__guest-input" %>
+            </div>
+          <% end %>
+
+          <div class="comment-composer__actions">
+            <%= f.submit "Comment", class: "btn btn-primary btn-sm" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="comments-sidebar__list">
+      <% if @active_comments.any? %>
+        <%= render partial: "comments/comment", collection: @active_comments, locals: { share_token: @share.token } %>
+      <% else %>
+        <div class="empty-state--inline">
+          <p>No comments yet. Be the first!</p>
         </div>
       <% end %>
 
-      <div class="actions">
-        <%= f.submit "Post Comment" %>
-      </div>
-    <% end %>
-
-    <hr>
-
-    <% if @active_comments.any? %>
-      <%= render partial: "comments/comment", collection: @active_comments, locals: { share_token: @share.token } %>
-    <% else %>
-      <p style="color: #999;">No comments yet.</p>
-    <% end %>
-
-    <% if @resolved_comments.any? %>
-      <h4 style="color: #999; margin-top: 16px;">Resolved (<%= @resolved_comments.size %>)</h4>
-      <%= render partial: "comments/comment", collection: @resolved_comments, locals: { share_token: @share.token } %>
-    <% end %>
+      <% if @resolved_comments.any? %>
+        <h4 class="resolved-heading">Resolved (<%= @resolved_comments.size %>)</h4>
+        <%= render partial: "comments/comment", collection: @resolved_comments, locals: { share_token: @share.token } %>
+      <% end %>
+    </div>
   </div>
 </div>

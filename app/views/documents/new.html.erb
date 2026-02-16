@@ -1,21 +1,25 @@
+<% content_for(:narrow) { true } %>
+
 <h1>Upload PDF</h1>
 
-<%= form_with(model: @document, local: true) do |f| %>
-  <%= render "shared/error_messages", resource: @document %>
+<div class="card">
+  <%= form_with(model: @document, local: true) do |f| %>
+    <%= render "shared/error_messages", resource: @document %>
 
-  <div class="field">
-    <p><%= f.label :title, "Title (optional — defaults to filename)" %></p>
-    <p><%= f.text_field :title %></p>
-  </div>
+    <div class="field">
+      <%= f.label :title, "Title (optional — defaults to filename)" %>
+      <%= f.text_field :title %>
+    </div>
 
-  <div class="field">
-    <p><%= f.label :file, "PDF File" %></p>
-    <p><%= f.file_field :file, accept: "application/pdf" %></p>
-  </div>
+    <div class="field">
+      <%= f.label :file, "PDF File" %>
+      <%= f.file_field :file, accept: "application/pdf" %>
+      <p class="file-hint">PDF only. Maximum file size: 10 MB.</p>
+    </div>
 
-  <div class="actions">
-    <%= f.submit "Upload" %>
-  </div>
-<% end %>
-
-<%= link_to "Back to Dashboard", root_path %>
+    <div class="actions">
+      <%= f.submit "Upload", class: "btn btn-primary" %>
+      <%= link_to "Cancel", root_path %>
+    </div>
+  <% end %>
+</div>

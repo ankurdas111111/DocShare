@@ -1,18 +1,14 @@
-<div class="markdown-toolbar" style="display: flex; gap: 4px; margin-bottom: 4px;">
-  <button type="button" data-action="markdown-toolbar#bold"
-          title="Bold (wrap with **)"
-          style="font-weight: bold; padding: 2px 8px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; border-radius: 3px; background: #f9f9f9;">
-    B
+<div class="md-toolbar" role="toolbar" aria-label="Text formatting">
+  <button type="button" data-action="markdown-toolbar#bold" data-format="bold"
+          aria-label="Bold" title="Bold (Ctrl+B)">
+    <strong>B</strong>
   </button>
-  <button type="button" data-action="markdown-toolbar#italic"
-          title="Italic (wrap with _)"
-          style="font-style: italic; padding: 2px 8px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; border-radius: 3px; background: #f9f9f9;">
-    I
+  <button type="button" data-action="markdown-toolbar#italic" data-format="italic"
+          aria-label="Italic" title="Italic (Ctrl+I)">
+    <em>I</em>
   </button>
-  <button type="button" data-action="markdown-toolbar#bullet"
-          title="Bullet list (prefix with -)"
-          style="padding: 2px 8px; font-size: 13px; cursor: pointer; border: 1px solid #ccc; border-radius: 3px; background: #f9f9f9;">
-    &bull; List
+  <button type="button" data-action="markdown-toolbar#bullet" data-format="insertUnorderedList"
+          aria-label="Bullet list" title="Bullet list">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="2" cy="4" r="1.5"/><rect x="5" y="3" width="10" height="2" rx="1"/><circle cx="2" cy="8" r="1.5"/><rect x="5" y="7" width="10" height="2" rx="1"/><circle cx="2" cy="12" r="1.5"/><rect x="5" y="11" width="10" height="2" rx="1"/></svg>
   </button>
-  <small style="color: #999; align-self: center; margin-left: 4px;">Markdown supported</small>
 </div>

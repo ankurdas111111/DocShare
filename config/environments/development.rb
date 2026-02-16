@@ -29,16 +29,26 @@ Rails.application.configure do
   config.cache_store = :memory_store
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  # Set STORAGE_SERVICE=cloudinary in .env to test Cloudinary; defaults to :local.
+  config.active_storage.service = ENV.fetch("STORAGE_SERVICE", "local").to_sym
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  # Raise delivery errors so we notice failures when testing Resend locally.
+  config.action_mailer.raise_delivery_errors = true
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+
+  # When RESEND_API_KEY is set in .env, use Resend for email delivery;
+  # otherwise Rails falls back to its default (:smtp / letter_opener).
+  if ENV["RESEND_API_KEY"].present?
+    config.action_mailer.delivery_method = :resend
+    config.action_mailer.resend_settings = {
+      api_key: ENV["RESEND_API_KEY"]
+    }
+  end
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
