@@ -13,6 +13,9 @@ cloudinary:
   cloud_name: <%= ENV["CLOUDINARY_CLOUD_NAME"] %>
   api_key: <%= ENV["CLOUDINARY_API_KEY"] %>
   api_secret: <%= ENV["CLOUDINARY_API_SECRET"] %>
+  type: upload
+  sign_url: true
+  access_mode: public
 
 # AWS S3 — available as an alternative production backend
 # Set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_BUCKET in env

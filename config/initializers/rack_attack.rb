@@ -37,7 +37,7 @@ class Rack::Attack
         "Content-Type" => "text/plain",
         "Retry-After" => retry_after.to_s
       },
-      ["Rate limit exceeded. Try again in #{retry_after} seconds.\n"]
+      [ "Rate limit exceeded. Try again in #{retry_after} seconds.\n" ]
     ]
   end
 end

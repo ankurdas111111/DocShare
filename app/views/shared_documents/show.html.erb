@@ -3,7 +3,7 @@
 
 <div class="pdf-layout"
      data-controller="pdf-viewer"
-     data-pdf-viewer-url-value="<%= rails_blob_path(@document.file, disposition: "inline") %>">
+     data-pdf-viewer-url-value="<%= rails_storage_proxy_path(@document.file, disposition: "inline") %>">
 
   <%# PDF Viewer %>
   <div class="pdf-viewer">

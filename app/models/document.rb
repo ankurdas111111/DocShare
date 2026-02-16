@@ -35,13 +35,13 @@ class Document < ApplicationRecord
     # For new uploads: read from upload_io (set by the controller).
     # For persisted blobs: download from Active Storage.
     header = if upload_io.present?
-               upload_io.rewind
-               bytes = upload_io.read(5)
-               upload_io.rewind
-               bytes
-             elsif !file.blob.new_record?
-               file.blob.open { |tempfile| tempfile.read(5) }
-             end
+                upload_io.rewind
+                bytes = upload_io.read(5)
+                upload_io.rewind
+                bytes
+    elsif !file.blob.new_record?
+                file.blob.open { |tempfile| tempfile.read(5) }
+    end
 
     if header.present? && header != "%PDF-"
       errors.add(:file, "does not appear to be a valid PDF")

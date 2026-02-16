@@ -27,7 +27,7 @@ class SharedDocumentsController < ApplicationController
 
   def edit_comment
     @comment = @document.comments.find(params[:id])
-    return unless authorize_shared_author!
+    authorize_shared_author! || return
   end
 
   def update_comment
@@ -58,7 +58,7 @@ class SharedDocumentsController < ApplicationController
       raise ActiveRecord::RecordNotFound, "Share link has expired"
     end
 
-    @document = Document.includes(:user, comments: [:user, { replies: :user }]).find(@share.document_id)
+    @document = Document.includes(:user, comments: [ :user, { replies: :user } ]).find(@share.document_id)
   end
 
   def comment_params

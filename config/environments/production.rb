@@ -81,7 +81,7 @@ Rails.application.configure do
   # Enable DNS rebinding protection and other `Host` header attacks.
   # Uses APP_HOST env var set on Render (eg. "docshare.onrender.com")
   config.hosts = [
-    ENV["APP_HOST"]        
+    ENV["APP_HOST"]
   ].compact
 
   # Skip DNS rebinding protection for the default health check endpoint.
