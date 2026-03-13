@@ -27,7 +27,7 @@ gem "resend"
 gem "redcarpet"
 
 # Pagination [https://github.com/ddnexus/pagy]
-gem "pagy", "~> 43.2"
+gem "pagy", "~> 43.3"
 
 # Rate limiting and throttling [https://github.com/rack/rack-attack]
 gem "rack-attack", "~> 6.8"
